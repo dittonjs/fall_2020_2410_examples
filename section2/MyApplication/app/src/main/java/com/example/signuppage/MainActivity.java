@@ -1,4 +1,4 @@
-package com.example.signupform;
+package com.example.signuppage;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -8,8 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.example.signupform.views.Header;
-import com.example.signupform.views.LabelledInput;
+import com.example.signuppage.views.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mainLayout.addView(submitButton);
+
         setContentView(mainLayout);
+
+
     }
 }
