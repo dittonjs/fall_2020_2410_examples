@@ -1,5 +1,6 @@
 package com.usu;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Queue;
 
@@ -10,11 +11,11 @@ public class CustomQueue {
         personQueue.add(personName);
     }
 
-    public String dequeuePerson() {
-       return personQueue.remove(0);
-    }
-
     public int getQueueLength() {
         return personQueue.size();
+    }
+
+    public String dequeuePerson() {
+        return personQueue.remove(0);
     }
 }
