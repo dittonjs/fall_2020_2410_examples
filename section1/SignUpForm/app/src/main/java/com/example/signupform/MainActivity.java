@@ -3,6 +3,7 @@ package com.example.signupform;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         LinearLayout mainLayout = new LinearLayout(this);
+//        mainLayout.setBackgroundColor(Color.GRAY);
         mainLayout.setOrientation(LinearLayout.VERTICAL);
 
         Header loginInfoHeader = new Header(this);
