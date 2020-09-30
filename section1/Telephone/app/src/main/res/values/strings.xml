@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Telephone</string>
+    <string name="call">Call</string>
+    <string name="instructions">Type a number to get started</string>
 </resources>
