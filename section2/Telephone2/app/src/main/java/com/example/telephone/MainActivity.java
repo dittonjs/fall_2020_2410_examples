@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.InputType;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -18,37 +19,49 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<PhoneButtonData> phoneButtonData = new ArrayList<PhoneButtonData>() {
         {
-            add(new PhoneButtonData("1", 0, 0, 1));
-            add(new PhoneButtonData("2", 0, 1, 1));
-            add(new PhoneButtonData("3", 0, 2, 1));
-            add(new PhoneButtonData("4", 1, 0, 1));
-            add(new PhoneButtonData("5", 1, 1, 1));
-            add(new PhoneButtonData("6", 1, 2, 1));
-            add(new PhoneButtonData("7", 2, 0, 1));
-            add(new PhoneButtonData("8", 2, 1, 1));
-            add(new PhoneButtonData("9", 2, 2, 1));
-            add(new PhoneButtonData("*", 3, 0, 1));
-            add(new PhoneButtonData("0", 3, 1, 1));
-            add(new PhoneButtonData("#", 3, 2, 1));
-            add(new PhoneButtonData("CALL", 4, 0, 3));
+            add(new PhoneButtonData("1", 1, 0, 1));
+            add(new PhoneButtonData("2", 1, 1, 1));
+            add(new PhoneButtonData("3", 1, 2, 1));
+            add(new PhoneButtonData("4", 2, 0, 1));
+            add(new PhoneButtonData("5", 2, 1, 1));
+            add(new PhoneButtonData("6", 2, 2, 1));
+            add(new PhoneButtonData("7", 3, 0, 1));
+            add(new PhoneButtonData("8", 3, 1, 1));
+            add(new PhoneButtonData("9", 3, 2, 1));
+            add(new PhoneButtonData("*", 4, 0, 1));
+            add(new PhoneButtonData("0", 4, 1, 1));
+            add(new PhoneButtonData("#", 4, 2, 1));
+            add(new PhoneButtonData("CALL", 5, 0, 3, PhoneButtonData.ButtonType.CALL));
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LinearLayout mainLayout = new LinearLayout(this);
-        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        GridLayout mainLayout = new GridLayout(this);
+        mainLayout.setColumnCount(3);
 
-        for (int i = 0; i < phoneButtonData.size(); i++) {
-            // do something with i and your phone data
-        }
-
-        for (PhoneButtonData data : phoneButtonData) {
-            // do something with data
-        }
+        PhoneNumberView phoneNumberView = new PhoneNumberView(this);
+        mainLayout.addView(phoneNumberView);
 
         phoneButtonData.forEach(data -> {
+            PhoneButton button = new PhoneButton(
+                    this,
+                    data,
+                    (view) -> {
+                       if (data.getType() == PhoneButtonData.ButtonType.CALL) {
+                            Intent phoneIntent = new Intent(Intent.ACTION_CALL);
+                            phoneIntent.setData(Uri.parse("tel:"+phoneNumberView.getText().toString()));
+                            startActivity(phoneIntent);
+                       } else {
+                           phoneNumberView.setText(
+                                   phoneNumberView.getText().toString() + data.getButtonText()
+                           );
+                       }
+                    }
+            );
+
+            mainLayout.addView(button);
             // do something with data
         });
 //        callButton.setOnClickListener(view -> {
