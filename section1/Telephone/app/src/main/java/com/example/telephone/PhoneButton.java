@@ -17,7 +17,7 @@ public class PhoneButton extends AppCompatButton {
         setOnClickListener(onClick);
         GradientDrawable background = new GradientDrawable();
 
-        background.setColor(getResources().getColor(R.color.colorPrimary));
+        background.setColor(getResources().getColor(R.color.colorPrimary, null));
         background.setStroke(2, Color.BLACK);
         background.setCornerRadius(400);
         setBackground(background);

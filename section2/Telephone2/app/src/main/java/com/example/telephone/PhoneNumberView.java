@@ -4,9 +4,10 @@ import android.content.Context;
 import android.view.Gravity;
 import android.widget.GridLayout;
 
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 
-public class PhoneNumberView extends AppCompatTextView {
+public class PhoneNumberView extends AppCompatEditText {
     public PhoneNumberView(Context context) {
         super(context);
         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
@@ -15,5 +16,6 @@ public class PhoneNumberView extends AppCompatTextView {
         setLayoutParams(params);
         setTextSize(32);
         setGravity(Gravity.CENTER);
+        setEnabled(false);
     }
 }

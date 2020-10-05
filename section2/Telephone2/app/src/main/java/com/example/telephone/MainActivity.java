@@ -31,44 +31,55 @@ public class MainActivity extends AppCompatActivity {
             add(new PhoneButtonData("*", 4, 0, 1));
             add(new PhoneButtonData("0", 4, 1, 1));
             add(new PhoneButtonData("#", 4, 2, 1));
-            add(new PhoneButtonData("CALL", 5, 0, 3, PhoneButtonData.ButtonType.CALL));
         }
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        createLayout();
+        createPhoneNumberDisplay();
+        createButtons();
+    }
+
+    private void createLayout() {
         GridLayout mainLayout = new GridLayout(this);
         mainLayout.setColumnCount(3);
+        mainLayout.setId(R.id.mainLayout);
+        setContentView(mainLayout);
+    }
 
+    private void createPhoneNumberDisplay() {
         PhoneNumberView phoneNumberView = new PhoneNumberView(this);
+        phoneNumberView.setId(R.id.phoneNumberDisplay);
+        GridLayout mainLayout = findViewById(R.id.mainLayout);
         mainLayout.addView(phoneNumberView);
+    }
 
+    private void createButtons() {
+        GridLayout mainLayout = findViewById(R.id.mainLayout);
+        PhoneNumberView phoneNumberView = findViewById(R.id.phoneNumberDisplay);
+        phoneButtonData.add(new PhoneButtonData(getResources().getString(R.string.call_button_text), 5, 0, 3, PhoneButtonData.ButtonType.CALL));
         phoneButtonData.forEach(data -> {
             PhoneButton button = new PhoneButton(
                     this,
                     data,
                     (view) -> {
-                       if (data.getType() == PhoneButtonData.ButtonType.CALL) {
+                        if (data.getType() == PhoneButtonData.ButtonType.CALL) {
                             Intent phoneIntent = new Intent(Intent.ACTION_CALL);
                             phoneIntent.setData(Uri.parse("tel:"+phoneNumberView.getText().toString()));
                             startActivity(phoneIntent);
-                       } else {
-                           phoneNumberView.setText(
-                                   phoneNumberView.getText().toString() + data.getButtonText()
-                           );
-                       }
+                        } else {
+                            phoneNumberView.setText(
+                                    phoneNumberView.getText().toString() + data.getButtonText()
+                            );
+                        }
                     }
             );
 
             mainLayout.addView(button);
             // do something with data
         });
-//        callButton.setOnClickListener(view -> {
-//            Intent phoneIntent = new Intent(Intent.ACTION_CALL);
-//            phoneIntent.setData(Uri.parse("tel:"+phoneNumberInput.getText().toString()));
-//            startActivity(phoneIntent);
-//        });
-        setContentView(mainLayout);
     }
+
 }

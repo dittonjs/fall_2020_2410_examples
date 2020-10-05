@@ -32,15 +32,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        createLayout();
+        createPhoneNumberDisplay();
+        addButtons();
+    }
+
+    private void createLayout() {
+        GridLayout mainLayout = new GridLayout(this);
+        mainLayout.setColumnCount(3);
+        mainLayout.setBackgroundColor(Color.GRAY);
+        mainLayout.setId(R.id.mainLayout);
+        setContentView(mainLayout);
+    }
+
+    private void createPhoneNumberDisplay() {
+        PhoneNumberDisplay phoneNumberDisplay = new PhoneNumberDisplay(this);
+        phoneNumberDisplay.setId(R.id.phoneNumberDisplay);
+        GridLayout mainLayout = findViewById(R.id.mainLayout);
+        mainLayout.addView(phoneNumberDisplay);
+    }
+
+    private void addButtons() {
         phoneButtonData.add(
                 new PhoneButtonData(getString(R.string.call), 5, 0, 3, PhoneButtonData.ButtonType.CALL)
         );
-        GridLayout mainLayout = new GridLayout(this);
-//        mainLayout.setBackgroundColor(Color.RED);
-        mainLayout.setColumnCount(3);
-        mainLayout.setBackgroundColor(Color.GRAY);
-        PhoneNumberDisplay phoneNumberDisplay = new PhoneNumberDisplay(this);
-        mainLayout.addView(phoneNumberDisplay);
+
+        GridLayout mainLayout = findViewById(R.id.mainLayout);
+        PhoneNumberDisplay phoneNumberDisplay = findViewById(R.id.phoneNumberDisplay);
         phoneButtonData.forEach(data -> {
             PhoneButton button = new PhoneButton(
                     this,
@@ -62,14 +80,5 @@ public class MainActivity extends AppCompatActivity {
             );
             mainLayout.addView(button);
         });
-
-
-//        callButton.setOnClickListener(view -> {
-//        callButton.setOnClickListener(view -> {
-//            Intent callIntent = new Intent(Intent.ACTION_CALL);
-//            callIntent.setData(Uri.parse("tel:"+phoneNumberView.getText().toString()));
-//            startActivity(callIntent);
-//        });
-        setContentView(mainLayout);
     }
 }

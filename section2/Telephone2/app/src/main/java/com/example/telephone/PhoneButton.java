@@ -16,34 +16,32 @@ public class PhoneButton extends AppCompatButton {
     public PhoneButton(Context context, PhoneButtonData data, View.OnClickListener onClick) {
         super(context);
         setText(data.getButtonText());
-        setOnClickListener((view) -> {
-            GradientDrawable drawable = new GradientDrawable();
-            drawable.setColor(Color.DKGRAY);
-            drawable.setStroke(2, Color.BLACK);
-            setBackground(drawable);
-            onClick.onClick(view);
-        });
+//        setOnClickListener((view) -> {
+//            GradientDrawable drawable = new GradientDrawable();
+//            drawable.setColor(Color.DKGRAY);
+//            drawable.setStroke(2, Color.BLACK);
+//            setBackground(drawable);
+//            onClick.onClick(view);
+//        });
 
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                int color = getResources().getColor(R.color.colorPrimary, null);
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    GradientDrawable drawable = new GradientDrawable();
-                    drawable.setColor(getResources().getColor(R.color.colorHighlight, null));
-                    drawable.setStroke(2, Color.BLACK);
-                    drawable.setCornerRadius(100);
-                    setBackground(drawable);
-                    onClick.onClick(view);
-                } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                    GradientDrawable drawable = new GradientDrawable();
-                    drawable.setColor(color);
-                    drawable.setStroke(2, Color.BLACK);
-                    drawable.setCornerRadius(100);
-                    setBackground(drawable);
-                }
-                return true;
+        setOnTouchListener((view, motionEvent) -> {
+            int color = getResources().getColor(R.color.colorPrimary, null);
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                GradientDrawable drawable = new GradientDrawable();
+                drawable.setColor(getResources().getColor(R.color.colorAccent, null));
+                drawable.setStroke(2, Color.BLACK);
+                drawable.setCornerRadius(100);
+                setBackground(drawable);
+                view.performClick();
+                onClick.onClick(view);
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                GradientDrawable drawable = new GradientDrawable();
+                drawable.setColor(color);
+                drawable.setStroke(2, Color.BLACK);
+                drawable.setCornerRadius(100);
+                setBackground(drawable);
             }
+            return true;
         });
 
         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
