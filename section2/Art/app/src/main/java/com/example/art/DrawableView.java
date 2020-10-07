@@ -11,22 +11,26 @@ import android.view.WindowMetrics;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class DrawableView extends View {
     Paint paint = new Paint();
+    ArrayList<CustomShape> shapes = new ArrayList<>();
     public DrawableView(Context context) {
         super(context);
+    }
 
+    public void addShape(CustomShape shape) {
+        shapes.add(shape);
+        invalidate();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        paint.setColor(Color.RED);
-        AppCompatActivity activity = (AppCompatActivity)getContext();
-//        WindowMetrics metrics = activity.getWindowManager().getCurrentWindowMetrics();
-//        canvas.drawCircle(100, 200, 100, paint);
-//        canvas.drawLine(400, 400, 800, 500, paint);
-//        canvas.drawRect(100, 600, 500, 900, paint);
-        invalidate();
+        shapes.forEach(shape -> {
+            shape.drawShape(canvas, paint);
+        });
     }
 }

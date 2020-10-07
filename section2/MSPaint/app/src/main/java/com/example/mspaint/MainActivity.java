@@ -2,7 +2,11 @@ package com.example.mspaint;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.DropBoxManager;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,7 +19,11 @@ public class MainActivity extends AppCompatActivity {
         ShapeSelector shapeSelector = new ShapeSelector(this);
         linearLayout.addView(shapeSelector);
 
-//        OnDrawTest view = new OnDrawTest(this);
+        DrawingView drawingView = new DrawingView(this);
+        drawingView.setOnTouchListener((view, motionEvent) -> {
+                return true;
+        });
+        linearLayout.addView(drawingView);
         setContentView(linearLayout);
     }
 }

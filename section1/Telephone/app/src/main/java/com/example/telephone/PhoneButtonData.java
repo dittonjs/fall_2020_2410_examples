@@ -8,7 +8,7 @@ public class PhoneButtonData {
         CALL
     }
     private String buttonText;
-    private int row;
+    protected int row;
     private int col;
     private int size;
     private ButtonType type;

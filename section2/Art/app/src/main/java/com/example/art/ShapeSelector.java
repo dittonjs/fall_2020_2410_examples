@@ -12,13 +12,21 @@ import androidx.appcompat.widget.AppCompatButton;
 import java.util.ArrayList;
 
 public class ShapeSelector extends LinearLayout {
-    ShapeButton selectedButton;
+    public enum ShapeType {
+        CIRCLE,
+        RECT,
+        LINE
+    }
+    private ShapeButton selectedButton;
 
-    ArrayList<ShapeButton> buttons = new ArrayList<ShapeButton>();
+    private ArrayList<ShapeButton> buttons = new ArrayList<ShapeButton>();
 
     private class ShapeButton extends AppCompatButton {
-        public ShapeButton(Context context) {
+        private ShapeType type;
+        public ShapeButton(Context context, ShapeType type) {
             super(context);
+            this.type = type;
+            setText(type.toString());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.weight = 1;
             setLayoutParams(params);
@@ -44,22 +52,21 @@ public class ShapeSelector extends LinearLayout {
             setTextColor(Color.WHITE);
             setBackground(background);
         }
+
+        public ShapeType getType() {
+            return type;
+        }
     }
 
     public ShapeSelector(Context context) {
         super(context);
-        ShapeButton circleButton = new ShapeButton(context);
-        circleButton.setText("CIRCLE");
-        ShapeButton rectangleButton = new ShapeButton(context);
-        rectangleButton.setText("RECTANGLE");
-        ShapeButton lineButton = new ShapeButton(context);
-        lineButton.setText("LINE");
-        ShapeButton triangleButton = new ShapeButton(context);
-        triangleButton.setText("TRIANGLE");
+        ShapeButton circleButton = new ShapeButton(context, ShapeType.CIRCLE);
+        ShapeButton rectangleButton = new ShapeButton(context, ShapeType.RECT);
+        ShapeButton lineButton = new ShapeButton(context, ShapeType.LINE);
+
         buttons.add(circleButton);
         buttons.add(rectangleButton);
         buttons.add(lineButton);
-        buttons.add(triangleButton);
 
         buttons.forEach(button -> {
             button.setOnClickListener(view -> {
@@ -74,5 +81,7 @@ public class ShapeSelector extends LinearLayout {
         selectedButton.select();
     }
 
-
+    public ShapeType getSelectedType() {
+        return selectedButton.getType();
+    }
 }

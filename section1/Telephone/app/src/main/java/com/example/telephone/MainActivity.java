@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private ArrayList<PhoneButtonData> phoneButtonData = new ArrayList<PhoneButtonData>() {
         {
+
             add(new PhoneButtonData("1", 1, 0, 1));
             add(new PhoneButtonData("2", 1, 1, 1));
             add(new PhoneButtonData("3", 1, 2, 1));
