@@ -15,7 +15,8 @@ public class ShapeSelector extends LinearLayout {
     public enum ShapeType {
         CIRCLE,
         RECT,
-        LINE
+        LINE,
+        IMAGE,
     }
     private ShapeButton selectedButton;
 
@@ -63,10 +64,12 @@ public class ShapeSelector extends LinearLayout {
         ShapeButton circleButton = new ShapeButton(context, ShapeType.CIRCLE);
         ShapeButton rectangleButton = new ShapeButton(context, ShapeType.RECT);
         ShapeButton lineButton = new ShapeButton(context, ShapeType.LINE);
+        ShapeButton imageButton = new ShapeButton(context, ShapeType.IMAGE);
 
         buttons.add(circleButton);
         buttons.add(rectangleButton);
         buttons.add(lineButton);
+        buttons.add(imageButton);
 
         buttons.forEach(button -> {
             button.setOnClickListener(view -> {

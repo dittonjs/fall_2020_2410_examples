@@ -17,21 +17,34 @@ public class Calculator {
         }
 
         if (tokens.length == 1) {
-            return Double.parseDouble(tokens[0]);
+            try {
+                return Double.parseDouble(tokens[0]);
+            } catch (Exception e) {
+                return Double.NaN;
+            }
         }
 
         if (tokens.length == 2) {
             // we also have an error
             return Double.NaN;
         }
-
-        double currentValue = Double.parseDouble(tokens[0]);
+        double currentValue;
+        try {
+            currentValue = Double.parseDouble(tokens[0]);
+        } catch (Exception e) {
+            return Double.NaN;
+        }
         String operation = tokens[1];
         String mode = "value";
 
         for (int i = 2; i < tokens.length; i ++) {
             if (mode.equals("value")) {
-                double foundValue = Double.parseDouble(tokens[i]);
+                double foundValue;
+                try {
+                    foundValue = Double.parseDouble(tokens[i]);
+                } catch (Exception e) {
+                    return Double.NaN;
+                }
 
                 if (operation.equals("+")) {
                     currentValue = currentValue + foundValue;

@@ -15,14 +15,21 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class DrawableView extends View {
-    Paint paint = new Paint();
-    ArrayList<CustomShape> shapes = new ArrayList<>();
+    private Paint paint = new Paint();
+    private ArrayList<CustomShape> shapes = new ArrayList<>();
+    private CustomShape currentShape;
     public DrawableView(Context context) {
         super(context);
     }
 
     public void addShape(CustomShape shape) {
         shapes.add(shape);
+        currentShape = shape;
+        invalidate();
+    }
+
+    public void resizeCurrentShape(float x, float y) {
+        currentShape.resizeShape(x, y);
         invalidate();
     }
 
@@ -30,7 +37,7 @@ public class DrawableView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         shapes.forEach(shape -> {
-            shape.drawShape(canvas, paint);
+            shape.drawShape(canvas, paint, getResources());
         });
     }
 }

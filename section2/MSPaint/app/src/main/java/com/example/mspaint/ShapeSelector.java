@@ -14,11 +14,12 @@ import java.util.ArrayList;
 
 public class ShapeSelector extends LinearLayout {
 
-    ShapeButton currentShapeButton;
+    private ShapeButton currentShapeButton;
     public enum ShapeType {
         LINE,
         CIRCLE,
-        RECT
+        RECT,
+        PLUS
     }
 
     private class ShapeButton extends AppCompatButton {
