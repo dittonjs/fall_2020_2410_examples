@@ -11,9 +11,8 @@ import java.util.ArrayList;
 public class NewTodoPresenter {
     MVPView view;
     AppDatabase database;
-    public interface MVPView {
-        public void goBackToTodosPage();
-        public AppDatabase getContextDatabase();
+    public interface MVPView extends BaseMVPView {
+        public void goBackToTodosPage(Todo todo);
     }
 
     public NewTodoPresenter(NewTodoActivity view) {
@@ -27,8 +26,8 @@ public class NewTodoPresenter {
             Todo todo = new Todo();
             todo.contents = contents;
             todo.isComplete = false;
-            database.getTodoDao().create(todo);
-            view.goBackToTodosPage();
+            todo.id = (int)database.getTodoDao().create(todo);
+            view.goBackToTodosPage(todo);
         }).start();
     }
 }

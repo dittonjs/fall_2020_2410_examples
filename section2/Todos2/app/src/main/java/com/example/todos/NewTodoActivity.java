@@ -1,5 +1,7 @@
 package com.example.todos;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
@@ -10,6 +12,7 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.room.Room;
 
 import com.example.todos.database.AppDatabase;
+import com.example.todos.models.Todo;
 import com.example.todos.presenters.NewTodoPresenter;
 import com.example.todos.presenters.TodosPresenter;
 
@@ -33,7 +36,10 @@ public class NewTodoActivity extends BaseActivity implements NewTodoPresenter.MV
     }
 
     @Override
-    public void goBackToTodosPage() {
+    public void goBackToTodosPage(Todo newTodo) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("result", newTodo);
+        setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
 }

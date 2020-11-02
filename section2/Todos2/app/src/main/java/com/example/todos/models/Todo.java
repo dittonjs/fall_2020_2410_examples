@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 //Table = "Todo"
 //===============================================
 //id       |    contents     |   is_complete    |
@@ -12,7 +14,7 @@ import androidx.room.PrimaryKey;
 //1        | go pickup grandma |   false        |
 
 @Entity
-public class Todo {
+public class Todo implements Serializable {
 
     @PrimaryKey(autoGenerate = true)
     public int id;

@@ -19,7 +19,7 @@ public interface TodoDao {
     Todo getTodo(int id);
 
     @Insert
-    void createTodo(Todo todo);
+    long createTodo(Todo todo);
 
     @Update
     void updateTodo(Todo todo);

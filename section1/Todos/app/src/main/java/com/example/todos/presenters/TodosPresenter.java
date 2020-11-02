@@ -10,10 +10,9 @@ public class TodosPresenter {
     private MVPView view;
     private ArrayList<Todo> todos = new ArrayList<>();
     private AppDatabase database;
-    public interface MVPView {
-        public void renderTodos(ArrayList<Todo> todos);
+    public interface MVPView extends BaseMVPView {
+        public void renderTodo(Todo todo);
         public void goToNewTodoPage();
-        public AppDatabase getContextDatabase();
     }
 
     public TodosPresenter(MVPView view) {
@@ -28,7 +27,9 @@ public class TodosPresenter {
         new Thread(() -> {
             // go to the database and load todos
             todos = (ArrayList<Todo>)database.getTodoDao().getAll();
-            view.renderTodos(todos);
+            todos.forEach(todo -> {
+                view.renderTodo(todo);
+            });
         }).start();
     }
 
@@ -45,4 +46,10 @@ public class TodosPresenter {
             database.getTodoDao().update(todo);
         }).start();
     }
+
+    public void handleNewTodoCreated(Todo todo) {
+        todos.add(todo);
+        view.renderTodo(todo);
+    }
 }
+

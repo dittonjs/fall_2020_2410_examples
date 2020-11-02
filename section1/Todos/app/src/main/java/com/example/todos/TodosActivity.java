@@ -1,11 +1,13 @@
 package com.example.todos;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
@@ -18,10 +20,12 @@ import com.example.todos.presenters.TodosPresenter;
 
 import java.util.ArrayList;
 
-public class TodosActivity extends AppCompatActivity implements TodosPresenter.MVPView {
+public class TodosActivity extends BaseActivity implements TodosPresenter.MVPView {
     LinearLayout mainLayout;
     LinearLayout todosLayout;
     TodosPresenter todosPresenter;
+    ArrayList<TodoListItem> todoListItems;
+    private final int CREATE_NEW_TODO = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,37 +50,34 @@ public class TodosActivity extends AppCompatActivity implements TodosPresenter.M
         setContentView(mainLayout);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        todosPresenter.loadTodos();
-    }
 
     @Override
-    public void renderTodos(ArrayList<Todo> todos) {
+    public void renderTodo(Todo todo) {
         runOnUiThread(() -> {
-            todosLayout.removeAllViews();
-
-            todos.forEach(todo -> {
-                TodoListItem listItem = new TodoListItem(
-                        this,
-                        todo,
-                        (newValue) -> {
-                            todosPresenter.updateTodo(todo, newValue);
-                        });
-                todosLayout.addView(listItem);
-            });
+            TodoListItem listItem = new TodoListItem(
+                    this,
+                    todo,
+                    (newValue) -> {
+                        todosPresenter.updateTodo(todo, newValue);
+                    });
+            todoListItems.add(listItem);
+            todosLayout.addView(listItem);
         });
     }
 
     @Override
     public void goToNewTodoPage() {
         Intent intent = new Intent(this, NewTodoActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, CREATE_NEW_TODO);
     }
 
     @Override
-    public AppDatabase getContextDatabase() {
-        return Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "todos").build();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CREATE_NEW_TODO && resultCode == Activity.RESULT_OK) {
+            Todo newTodo = (Todo)data.getSerializableExtra("result");
+            todosPresenter.handleNewTodoCreated(newTodo);
+        }
+
     }
 }

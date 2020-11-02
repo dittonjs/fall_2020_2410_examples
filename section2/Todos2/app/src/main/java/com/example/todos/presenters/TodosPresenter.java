@@ -15,7 +15,7 @@ public class TodosPresenter {
     ArrayList<Todo> todos = new ArrayList<>();
 
     public interface MVPView extends BaseMVPView{
-        public void renderTodos(ArrayList<Todo>  todos);
+        public void renderTodo(Todo todo);
         public void goToNewTodoPage();
     }
 
@@ -35,7 +35,7 @@ public class TodosPresenter {
     public void loadTodos() {
         new Thread(() -> {
             todos = (ArrayList<Todo>) database.getTodoDao().getTodos();
-            view.renderTodos(todos);
+            todos.forEach(todo -> view.renderTodo(todo));
         }).start();
     }
 
@@ -44,5 +44,10 @@ public class TodosPresenter {
             todo.isComplete = isComplete;
             database.getTodoDao().updateTodo(todo);
         }).start();
+    }
+
+    public void onNewTodoCreated(Todo todo) {
+        todos.add(todo);
+        view.renderTodo(todo);
     }
 }

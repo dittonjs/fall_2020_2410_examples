@@ -1,5 +1,7 @@
 package com.example.todos;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
@@ -10,9 +12,10 @@ import androidx.appcompat.widget.AppCompatEditText;
 import androidx.room.Room;
 
 import com.example.todos.database.AppDatabase;
+import com.example.todos.models.Todo;
 import com.example.todos.presenters.NewTodoPresenter;
 
-public class NewTodoActivity extends AppCompatActivity implements NewTodoPresenter.MVPView {
+public class NewTodoActivity extends BaseActivity implements NewTodoPresenter.MVPView {
     NewTodoPresenter presenter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,12 +39,11 @@ public class NewTodoActivity extends AppCompatActivity implements NewTodoPresent
     }
 
     @Override
-    public void goBackToTodosPage() {
+    public void goBackToTodosPage(Todo todo) {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("result", todo);
+        setResult(Activity.RESULT_OK, resultIntent);
         finish();
     }
 
-    @Override
-    public AppDatabase getContextDatabase() {
-        return Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "todos").build();
-    }
 }
