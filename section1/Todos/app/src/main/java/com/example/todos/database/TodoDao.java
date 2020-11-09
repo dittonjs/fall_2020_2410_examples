@@ -16,7 +16,7 @@ public interface TodoDao {
     List<Todo> getAll();
 
     @Query("SELECT * FROM todo WHERE id = :id LIMIT 1")
-    Todo findById(int id);
+    List<Todo> findById(int id);
 
     @Insert
     long create(Todo todo);

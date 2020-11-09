@@ -6,14 +6,19 @@ import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.room.DatabaseConfiguration;
+import androidx.room.InvalidationTracker;
 import androidx.room.Room;
+import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import com.example.todos.components.TodoListItem;
 import com.example.todos.database.AppDatabase;
+import com.example.todos.database.TodoDao;
 import com.example.todos.models.Todo;
 import com.example.todos.presenters.TodosPresenter;
 

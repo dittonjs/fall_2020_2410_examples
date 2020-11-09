@@ -11,6 +11,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import com.example.todos.models.Todo;
 
 public class TodoListItem extends LinearLayout {
+    private Todo todo;
 
     public interface OnTodoStatusChangedListener {
         public void onChange(boolean isComplete);
@@ -29,5 +30,9 @@ public class TodoListItem extends LinearLayout {
 
         addView(checkBox);
         addView(todoContentsView);
+    }
+
+    public Todo getTodo() {
+        return todo;
     }
 }
