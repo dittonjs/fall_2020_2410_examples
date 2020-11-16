@@ -9,11 +9,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.example.personalblog.models.BlogPost;
 import com.example.personalblog.presenters.BlogPostsPresenter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class BlogPostsActivity extends BaseActivity implements BlogPostsPresenter.MVPView{
     LinearLayout blogPostsLayout;
@@ -24,23 +28,26 @@ public class BlogPostsActivity extends BaseActivity implements BlogPostsPresente
         super.onCreate(savedInstanceState);
         presenter = new BlogPostsPresenter(this);
 
-        LinearLayout mainLayout = new LinearLayout(this);
-        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        FrameLayout mainLayout = new FrameLayout(this);
 
         ScrollView scrollView = new ScrollView(this);
 
         blogPostsLayout = new LinearLayout(this);
         blogPostsLayout.setOrientation(LinearLayout.VERTICAL);
 
-        AppCompatButton button = new AppCompatButton(this);
-        button.setText("New Blog Post");
+        FloatingActionButton button = new FloatingActionButton(this);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 0, 48, 48);
+        params.gravity = (Gravity.BOTTOM | Gravity.RIGHT);
+        button.setLayoutParams(params);
+        button.setImageResource(R.drawable.ic_baseline_add_24);
 
         button.setOnClickListener((view) -> {
             presenter.handleNewBlogPostClick();
         });
 
-        mainLayout.addView(button);
         mainLayout.addView(scrollView);
+        mainLayout.addView(button);
         scrollView.addView(blogPostsLayout);
 
         setContentView(mainLayout);

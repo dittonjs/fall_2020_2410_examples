@@ -6,6 +6,8 @@ import com.example.personalblog.models.BlogPost;
 public class NewBlogPostPresenter {
     public interface MVPView extends BaseMVPView {
         void goBackToBlogPosts(BlogPost post);
+        void goToPhotos();
+        void displayPicture(String pictureUri);
     }
 
     MVPView view;
@@ -26,5 +28,17 @@ public class NewBlogPostPresenter {
             newPost.id = (int)database.getBlogPostDao().insert(newPost);
             view.goBackToBlogPosts(newPost);
         }).start();
+    }
+
+    public void handleSelectPictureButtonPressed() {
+        view.goToPhotos();
+    }
+
+    public void handlePictureSelected(String pictureUri) {
+        view.displayPicture(pictureUri);
+    }
+
+    public void handleCancelPressed() {
+        view.goBackToBlogPosts(null);
     }
 }

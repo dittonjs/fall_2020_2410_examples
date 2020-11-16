@@ -3,15 +3,18 @@ package com.example.personalblog;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.view.GravityCompat;
 
+import com.example.personalblog.components.ImageSelector;
 import com.example.personalblog.components.MaterialInput;
 import com.example.personalblog.models.BlogPost;
 import com.example.personalblog.presenters.BlogPostsPresenter;
@@ -22,13 +25,20 @@ import com.google.android.material.textfield.TextInputLayout;
 
 public class NewBlogPostActivity extends BaseActivity implements NewBlogPostPresenter.MVPView{
     NewBlogPostPresenter presenter;
-
+    ImageSelector imageSelector;
+    private final int SELECT_IMAGE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new NewBlogPostPresenter(this);
         LinearLayout mainLayout = new LinearLayout(this);
         mainLayout.setOrientation(LinearLayout.VERTICAL);
+
+        imageSelector = new ImageSelector(this);
+        imageSelector.setOnClickListener((view) -> {
+            presenter.handleSelectImagePress();
+        });
+        mainLayout.addView(imageSelector);
 
         MaterialInput titleInput = new MaterialInput(this, "Title");
         MaterialInput descriptionInput = new MaterialInput(this, "Description");
@@ -57,7 +67,7 @@ public class NewBlogPostActivity extends BaseActivity implements NewBlogPostPres
                     titleInput.getText().toString(),
                     descriptionInput.getText().toString(),
                     contentsInput.getText().toString(),
-                    ""
+                    imageSelector.getImageUri()
             );
         });
 
@@ -79,5 +89,31 @@ public class NewBlogPostActivity extends BaseActivity implements NewBlogPostPres
             setResult(Activity.RESULT_OK, intent);
         }
         finish();
+    }
+
+    @Override
+    public void goToPhotos() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), SELECT_IMAGE);
+    }
+
+    @Override
+    public void displayImage(String imageUri) {
+        imageSelector.setImageUri(imageUri);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == SELECT_IMAGE && resultCode == Activity.RESULT_OK) {
+            Uri imageUri = data.getData();
+            presenter.handleImageSelected(imageUri.toString());
+        }
+        if (requestCode == SELECT_IMAGE && resultCode == Activity.RESULT_CANCELED) {
+            presenter.handleImageSelected("");
+        }
     }
 }
