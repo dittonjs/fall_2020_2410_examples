@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.example.personalblog.components.BlogPostCard;
 import com.example.personalblog.models.BlogPost;
 import com.example.personalblog.presenters.BlogPostsPresenter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -57,10 +58,19 @@ public class BlogPostsActivity extends BaseActivity implements BlogPostsPresente
     @Override
     public void renderBlogPost(BlogPost post) {
         runOnUiThread(() -> {
-            AppCompatTextView textView = new AppCompatTextView(this);
-            textView.setText(post.title);
-            postsLayout.addView(textView);
+            BlogPostCard blogPostCard = new BlogPostCard(this, post);
+            blogPostCard.setOnClickListener((view) -> {
+                presenter.handleBlogPostSelected(post.id);
+            });
+            postsLayout.addView(blogPostCard);
         });
+    }
+
+    @Override
+    public void goToBlogPostPage(long id) {
+        Intent intent = new Intent(this, BlogPostActivity.class);
+        intent.putExtra("id", id);
+        startActivity(intent);
     }
 
     @Override

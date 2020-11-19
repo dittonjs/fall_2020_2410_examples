@@ -30,7 +30,7 @@ public class BlogPostsPresenter {
     }
 
     public void handleBlogPostClick(int id) {
-
+        view.goToBlogPostPage(id);
     }
 
     public void onNewBlogPostCreated(BlogPost post) {

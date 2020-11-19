@@ -12,6 +12,7 @@ public class BlogPostsPresenter {
     public interface MVPView extends BaseMVPView {
         void goToNewBlogPostPage();
         void renderBlogPost(BlogPost post);
+        void goToBlogPostPage(long id);
     }
 
     MVPView view;
@@ -36,4 +37,8 @@ public class BlogPostsPresenter {
         posts.add(post);
         view.renderBlogPost(post);
     };
+
+    public void handleBlogPostSelected(long id) {
+        view.goToBlogPostPage(id);
+    }
 }
