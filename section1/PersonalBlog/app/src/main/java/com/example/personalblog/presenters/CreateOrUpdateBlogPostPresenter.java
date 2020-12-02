@@ -9,6 +9,9 @@ public class CreateOrUpdateBlogPostPresenter {
         void goToPhotos();
         void displayPicture(String pictureUri);
         void populatePostForm(BlogPost post);
+        void displayTitleError();
+        void displayDescriptionError();
+        void goToCamera();
     }
 
     public static final int DEFAULT_POST_ID = -1;
@@ -30,6 +33,19 @@ public class CreateOrUpdateBlogPostPresenter {
 
     public void saveBlogPost(String title, String description, String contents, String pictureUri) {
         // insertion into the database
+        boolean hasError = false;
+        if (title.length() == 0) {
+            view.displayTitleError();
+            hasError = true;
+        }
+        if (description.length() == 0) {
+            view.displayDescriptionError();
+            hasError = true;
+        }
+        if (hasError) {
+            return;
+        }
+
         new Thread(() -> {
             if (post == null) {
                 // we are inserting a post
@@ -55,6 +71,10 @@ public class CreateOrUpdateBlogPostPresenter {
 
     public void handleSelectPictureButtonPressed() {
         view.goToPhotos();
+    }
+
+    public void handleTakePicturePressed() {
+        view.goToCamera();
     }
 
     public void handlePictureSelected(String pictureUri) {

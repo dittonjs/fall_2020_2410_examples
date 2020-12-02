@@ -4,16 +4,26 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.Gravity;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 
 import com.example.personalblog.components.ImageSelector;
 import com.example.personalblog.components.MaterialInput;
 import com.example.personalblog.models.BlogPost;
 import com.example.personalblog.presenters.CreateOrUpdateBlogPostPresenter;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CreateOrUpdateBlogPostActivity extends BaseActivity implements CreateOrUpdateBlogPostPresenter.MVPView {
     CreateOrUpdateBlogPostPresenter presenter;
@@ -23,6 +33,9 @@ public class CreateOrUpdateBlogPostActivity extends BaseActivity implements Crea
     MaterialInput descriptionInput;
     MaterialInput contentsInput;
     private final int PICK_IMAGE = 1;
+    private final int TAKE_PICTURE = 2;
+
+    String currentFilePath;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +45,15 @@ public class CreateOrUpdateBlogPostActivity extends BaseActivity implements Crea
 
         selector = new ImageSelector(this);
         selector.setOnClickListener((view) -> {
-            presenter.handleSelectPictureButtonPressed();
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Choose Image")
+                    .setItems(new CharSequence[]{"From Camera", "From Photos"}, (menuItem, i) -> {
+                        if (i == 0) {
+                            presenter.handleTakePicturePressed();
+                        } else {
+                            presenter.handleSelectPictureButtonPressed();
+                        }
+                    }).show();
         });
         mainLayout.addView(selector);
 
@@ -49,6 +70,9 @@ public class CreateOrUpdateBlogPostActivity extends BaseActivity implements Crea
         MaterialButton saveButton = new MaterialButton(this);
         saveButton.setText("Save");
         saveButton.setOnClickListener((view) -> {
+            titleInput.setErrorEnabled(false);
+            descriptionInput.setErrorEnabled(false);
+
             presenter.saveBlogPost(
                     titleInput.getText().toString(),
                     descriptionInput.getText().toString(),
@@ -71,7 +95,10 @@ public class CreateOrUpdateBlogPostActivity extends BaseActivity implements Crea
 
         mainLayout.addView(buttonsLayout);
 
-        setContentView(mainLayout);
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.addView(mainLayout);
+
+        setContentView(scrollView);
     }
 
     @Override
@@ -110,11 +137,47 @@ public class CreateOrUpdateBlogPostActivity extends BaseActivity implements Crea
     }
 
     @Override
+    public void displayTitleError() {
+        titleInput.setErrorEnabled(true);
+        titleInput.setError("Title cannot be blank");
+        Snackbar.make(mainLayout, "Title cannot be blank", Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void displayDescriptionError() {
+        descriptionInput.setErrorEnabled(true);
+        descriptionInput.setError("Description cannot be blank");
+        Snackbar.make(mainLayout, "Description cannot be blank", Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void goToCamera() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String fileName = "JPEG_" + timeStamp + ".jpg";
+
+        File imageFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
+        currentFilePath = imageFile.getAbsolutePath();
+
+        Uri imageUri = FileProvider.getUriForFile(
+                this,
+                "com.example.personalblog.provider",
+                imageFile
+        );
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent, TAKE_PICTURE);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == Activity.RESULT_OK) {
             Uri pictureUri = data.getData();
             presenter.handlePictureSelected(pictureUri.toString());
+        }
+        if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) {
+            presenter.handlePictureSelected(currentFilePath);
         }
     }
 }

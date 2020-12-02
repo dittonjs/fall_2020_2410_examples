@@ -2,6 +2,7 @@ package com.example.personalblog.components;
 
 import android.content.Context;
 import android.text.Editable;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
