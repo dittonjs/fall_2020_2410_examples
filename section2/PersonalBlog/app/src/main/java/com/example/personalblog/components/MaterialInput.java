@@ -34,4 +34,8 @@ public class MaterialInput extends TextInputLayout {
     public String getText() {
         return input.getText().toString();
     }
+
+    public void setText(String text) {
+        input.setText(text);
+    }
 }

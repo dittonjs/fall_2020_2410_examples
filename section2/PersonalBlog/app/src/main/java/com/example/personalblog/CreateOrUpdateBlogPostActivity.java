@@ -2,36 +2,35 @@ package com.example.personalblog;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.core.view.GravityCompat;
 
 import com.example.personalblog.components.ImageSelector;
 import com.example.personalblog.components.MaterialInput;
 import com.example.personalblog.models.BlogPost;
-import com.example.personalblog.presenters.BlogPostsPresenter;
-import com.example.personalblog.presenters.NewBlogPostPresenter;
+import com.example.personalblog.presenters.CreateOrUpdateBlogPostPresenter;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.snackbar.Snackbar;
 
-public class NewBlogPostActivity extends BaseActivity implements NewBlogPostPresenter.MVPView{
-    NewBlogPostPresenter presenter;
+public class CreateOrUpdateBlogPostActivity extends BaseActivity implements CreateOrUpdateBlogPostPresenter.MVPView{
+    CreateOrUpdateBlogPostPresenter presenter;
+    LinearLayout mainLayout;
     ImageSelector imageSelector;
+    MaterialInput titleInput;
+    MaterialInput descriptionInput;
+    MaterialInput contentsInput;
     private final int SELECT_IMAGE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new NewBlogPostPresenter(this);
-        LinearLayout mainLayout = new LinearLayout(this);
+        presenter = new CreateOrUpdateBlogPostPresenter(this, getIntent().getLongExtra("id", -1));
+        mainLayout = new LinearLayout(this);
         mainLayout.setOrientation(LinearLayout.VERTICAL);
 
         imageSelector = new ImageSelector(this);
@@ -40,9 +39,9 @@ public class NewBlogPostActivity extends BaseActivity implements NewBlogPostPres
         });
         mainLayout.addView(imageSelector);
 
-        MaterialInput titleInput = new MaterialInput(this, "Title");
-        MaterialInput descriptionInput = new MaterialInput(this, "Description");
-        MaterialInput contentsInput = new MaterialInput(this, "Contents", true);
+        titleInput = new MaterialInput(this, "Title");
+        descriptionInput = new MaterialInput(this, "Description");
+        contentsInput = new MaterialInput(this, "Contents", true);
 
         MaterialButton saveButton = new MaterialButton(this, null, R.attr.materialButtonStyle);
         saveButton.setText("Save");
@@ -63,7 +62,8 @@ public class NewBlogPostActivity extends BaseActivity implements NewBlogPostPres
 
 
         saveButton.setOnClickListener((view) -> {
-            presenter.createNewBlogPost(
+            titleInput.setErrorEnabled(false);
+            presenter.saveBlogPost(
                     titleInput.getText().toString(),
                     descriptionInput.getText().toString(),
                     contentsInput.getText().toString(),
@@ -74,9 +74,16 @@ public class NewBlogPostActivity extends BaseActivity implements NewBlogPostPres
         mainLayout.addView(titleInput);
         mainLayout.addView(descriptionInput);
         mainLayout.addView(contentsInput);
+        mainLayout.addView(new MaterialInput(this, "Date"));
+        mainLayout.addView(new MaterialInput(this, "Date"));
+        mainLayout.addView(new MaterialInput(this, "Date"));
+        mainLayout.addView(new MaterialInput(this, "Date"));
+        mainLayout.addView(new MaterialInput(this, "Date"));
         mainLayout.addView(buttons);
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.addView(mainLayout);
 
-        setContentView(mainLayout);
+        setContentView(scrollView);
     }
 
     @Override
@@ -102,6 +109,23 @@ public class NewBlogPostActivity extends BaseActivity implements NewBlogPostPres
     @Override
     public void displayImage(String imageUri) {
         imageSelector.setImageUri(imageUri);
+    }
+
+    @Override
+    public void renderPost(BlogPost post) {
+        runOnUiThread(() -> {
+            titleInput.setText(post.title);
+            descriptionInput.setText(post.description);
+            contentsInput.setText(post.contents);
+            imageSelector.setImageUri(post.pictureUri);
+        });
+    }
+
+    @Override
+    public void displayTitleError() {
+        Snackbar.make(mainLayout, "Title cannot be blank.", Snackbar.LENGTH_SHORT).show();
+        titleInput.setErrorEnabled(true);
+        titleInput.setError("Title cannot be blank.");
     }
 
     @Override

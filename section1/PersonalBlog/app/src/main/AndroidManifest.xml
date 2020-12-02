@@ -16,9 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NewBlogPostActivity"></activity>
+        <activity android:name=".CreateOrUpdateBlogPostActivity"></activity>
         <activity android:name=".BlogPostActivity"></activity>
-        <activity android:name=".EditBlogPostActivity"></activity>
     </application>
 
 </manifest>

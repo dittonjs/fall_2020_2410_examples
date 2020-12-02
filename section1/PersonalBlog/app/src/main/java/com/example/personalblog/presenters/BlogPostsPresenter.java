@@ -11,6 +11,8 @@ public class BlogPostsPresenter {
         void goToNewBlogPostPage();
         void goToBlogPostPage(int id);
         void renderBlogPost(BlogPost post);
+        void removeBlogPost(BlogPost post);
+        void updatePostUI(BlogPost post);
     }
 
     MVPView view;
@@ -39,10 +41,22 @@ public class BlogPostsPresenter {
     }
 
     public void onBlogPostDeleted(BlogPost post) {
-
+        for (int i = 0; i < posts.size(); i ++) {
+            if (posts.get(i).id == post.id) {
+                posts.remove(i);
+                break;
+            }
+        }
+        view.removeBlogPost(post);
     }
 
     public void onBlogPostUpdated(BlogPost post) {
-
+        for (int i = 0; i < posts.size(); i ++) {
+            if (posts.get(i).id == post.id) {
+                posts.set(i, post);
+                break;
+            }
+        }
+        view.updatePostUI(post);
     }
 }

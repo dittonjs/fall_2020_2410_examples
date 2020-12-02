@@ -1,15 +1,12 @@
 package com.example.personalblog;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatTextView;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -23,7 +20,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class BlogPostsActivity extends BaseActivity implements BlogPostsPresenter.MVPView{
     LinearLayout blogPostsLayout;
     BlogPostsPresenter presenter;
+    // request codes
+    private final int MODIFY_POST = 0;
     private final int CREATE_NEW_POST = 1;
+    // results codes
+    public final static int POST_DELETED = 2;
+    public final static int POST_UPDATED = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +58,7 @@ public class BlogPostsActivity extends BaseActivity implements BlogPostsPresente
 
     @Override
     public void goToNewBlogPostPage() {
-        Intent intent = new Intent(this, NewBlogPostActivity.class);
+        Intent intent = new Intent(this, CreateOrUpdateBlogPostActivity.class);
         startActivityForResult(intent, CREATE_NEW_POST);
     }
 
@@ -64,7 +66,7 @@ public class BlogPostsActivity extends BaseActivity implements BlogPostsPresente
     public void goToBlogPostPage(int id) {
         Intent intent = new Intent(this, BlogPostActivity.class);
         intent.putExtra("id", id);
-        startActivity(intent);
+        startActivityForResult(intent, MODIFY_POST);
     }
 
     @Override
@@ -80,6 +82,18 @@ public class BlogPostsActivity extends BaseActivity implements BlogPostsPresente
         });
     }
 
+    @Override
+    public void removeBlogPost(BlogPost post) {
+        View view = blogPostsLayout.findViewWithTag(post.id);
+        blogPostsLayout.removeView(view);
+    }
+
+    @Override
+    public void updatePostUI(BlogPost post) {
+        BlogPostCard card = blogPostsLayout.findViewWithTag(post.id);
+        card.setBlogPost(post);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -87,6 +101,19 @@ public class BlogPostsActivity extends BaseActivity implements BlogPostsPresente
         if (requestCode == CREATE_NEW_POST && resultCode == Activity.RESULT_OK) {
             BlogPost post = (BlogPost) data.getSerializableExtra("result");
             presenter.onNewBlogPostCreated(post);
+        }
+
+        if (requestCode == MODIFY_POST && resultCode == POST_DELETED) {
+            //update the UI
+            BlogPost deletedPost = (BlogPost)data.getSerializableExtra("post");
+            presenter.onBlogPostDeleted(deletedPost);
+        }
+
+        if (requestCode == MODIFY_POST && resultCode == POST_UPDATED) {
+            //update the UI
+            BlogPost updatedPost = (BlogPost)data.getSerializableExtra("post");
+            presenter.onBlogPostUpdated(updatedPost);
+//            presenter.onBlogPostDeleted(deletedPost);
         }
     }
 }
