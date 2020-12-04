@@ -10,6 +10,7 @@ public class CreateOrUpdateBlogPostPresenter {
         void displayImage(String imageUri);
         void renderPost(BlogPost post);
         void displayTitleError();
+        void goToCamera();
     }
 
     MVPView view;
@@ -65,4 +66,9 @@ public class CreateOrUpdateBlogPostPresenter {
     public void handleImageSelected(String imageUri) {
         view.displayImage(imageUri);
     }
+
+    public void handleTakePicturePress() {
+        view.goToCamera();
+    }
 }
+

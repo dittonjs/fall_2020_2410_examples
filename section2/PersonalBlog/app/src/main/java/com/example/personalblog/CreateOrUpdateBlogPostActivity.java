@@ -4,19 +4,28 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 
 import com.example.personalblog.components.ImageSelector;
 import com.example.personalblog.components.MaterialInput;
 import com.example.personalblog.models.BlogPost;
 import com.example.personalblog.presenters.CreateOrUpdateBlogPostPresenter;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CreateOrUpdateBlogPostActivity extends BaseActivity implements CreateOrUpdateBlogPostPresenter.MVPView{
     CreateOrUpdateBlogPostPresenter presenter;
@@ -26,6 +35,9 @@ public class CreateOrUpdateBlogPostActivity extends BaseActivity implements Crea
     MaterialInput descriptionInput;
     MaterialInput contentsInput;
     private final int SELECT_IMAGE = 1;
+    private final int TAKE_PICTURE = 2;
+
+    private String currentFilePath = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +47,15 @@ public class CreateOrUpdateBlogPostActivity extends BaseActivity implements Crea
 
         imageSelector = new ImageSelector(this);
         imageSelector.setOnClickListener((view) -> {
-            presenter.handleSelectImagePress();
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Choose Image")
+                    .setItems(new CharSequence[]{"From Camera", "From Photos"}, (menuItem, i) -> {
+                        if (i == 0) {
+                            presenter.handleTakePicturePress();
+                        } else {
+                            presenter.handleSelectImagePress();
+                        }
+                    }).show();
         });
         mainLayout.addView(imageSelector);
 
@@ -74,11 +94,7 @@ public class CreateOrUpdateBlogPostActivity extends BaseActivity implements Crea
         mainLayout.addView(titleInput);
         mainLayout.addView(descriptionInput);
         mainLayout.addView(contentsInput);
-        mainLayout.addView(new MaterialInput(this, "Date"));
-        mainLayout.addView(new MaterialInput(this, "Date"));
-        mainLayout.addView(new MaterialInput(this, "Date"));
-        mainLayout.addView(new MaterialInput(this, "Date"));
-        mainLayout.addView(new MaterialInput(this, "Date"));
+
         mainLayout.addView(buttons);
         ScrollView scrollView = new ScrollView(this);
         scrollView.addView(mainLayout);
@@ -129,6 +145,21 @@ public class CreateOrUpdateBlogPostActivity extends BaseActivity implements Crea
     }
 
     @Override
+    public void goToCamera() {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String fileName = "JPEG_" + timeStamp + ".jpg";
+
+        File imageFile = new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), fileName);
+        currentFilePath = imageFile.getAbsolutePath();
+
+        Uri imageUri = FileProvider.getUriForFile(this, "com.example.personalblog.provider", imageFile);
+
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        startActivityForResult(intent, TAKE_PICTURE);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -138,6 +169,9 @@ public class CreateOrUpdateBlogPostActivity extends BaseActivity implements Crea
         }
         if (requestCode == SELECT_IMAGE && resultCode == Activity.RESULT_CANCELED) {
             presenter.handleImageSelected("");
+        }
+        if (requestCode == TAKE_PICTURE && resultCode == Activity.RESULT_OK) {
+            presenter.handleImageSelected(currentFilePath);
         }
     }
 }
